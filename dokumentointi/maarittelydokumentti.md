@@ -2,6 +2,6 @@ Teen Vindinium-botin Javalla. Vindinium on peli, jota pelataan tekoälyillä. En
 
 Starterissa, jota käytän pohjana projektille, on käytetty lähinnä listoja (taulukko- ja linkitetty-lista). Myös muita yleisiä tietorakenteita, kuten hashmapia, tulee varmasti käytettyä. Projektin edetessä päivitän tarpeellisia tietorakenteita.
 
-Peli on osoitteessa vindinium.org/
+Peli on osoitteessa http://vindinium.org/
 
-Pohjan toteutukselleni, tai startterin, löysin vindiniumin sivulta (vindinium.org/starters), githubista seuraavasta osoitteesta https://github.com/bstempi/vindinium-client
+Pohjan toteutukselleni, tai startterin, löysin vindiniumin sivulta (http://vindinium.org/starters), githubista seuraavasta osoitteesta https://github.com/bstempi/vindinium-client
