@@ -1,2 +1,2 @@
 # vindi_bot
-Botti tekoälypelille Vindinium (http://vindinium.org
+Botti tekoälypelille Vindinium (http://vindinium.org)
