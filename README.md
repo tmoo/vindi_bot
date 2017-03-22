@@ -1,2 +1,1 @@
-# vindi_bot
-Botti tekoälypelille Vindinium (http://vindinium.org)
+A bot for the AI game vindinium (http://vindinium.org)
