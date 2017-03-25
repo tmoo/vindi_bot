@@ -1,6 +1,6 @@
-Teen Vindinium-botin Javalla. Vindinium on peli, jota pelataan tekoälyillä. Toteutan luultavasti Best-reply Search algoritmin (https://dke.maastrichtuniversity.nl/m.winands/documents/BestReplySearch.pdf), joka on eräs alpha-beta pruningin yleistys monelle pelaajalle. Mikäli aikaa riittää, kirjoitan vertailuksi toisenkin botin, esimerkiksi pelin eritysluonnetta hyödyntävän, vähemmän yleisen algoritmin.
+Teen Vindinium-botin Javalla. Vindinium on peli, jota pelataan tekoälyillä. Suunnittelen toteuttavani Best-Reply Search algoritmin (https://dke.maastrichtuniversity.nl/m.winands/documents/BestReplySearch.pdf), joka on eräs alpha-beta pruningin yleistys monelle pelaajalle. Mikäli aikaa riittää, kirjoitan vertailuksi toisenkin botin, esimerkiksi pelin eritysluonnetta hyödyntävän, vähemmän yleisen algoritmin. Lisäksi tarpeen tulee yleinen reitinhakualgoritmi, kuten A*, jolla fyysisen kentän liikuntamahdollisuudet kartoitetaan.
 
-Starterissa, jota käytän pohjana projektille, on käytetty lähinnä listoja (taulukko- ja linkitetty-lista). Myös muita yleisiä tietorakenteita, kuten hashmapia, tulee varmasti käytettyä. Projektin edetessä päivitän tarpeellisia tietorakenteita.
+Tarvittavia tietorakenteita ovat ainakin lista, joukko, (prioriteetti)jono, hakurakenne (eng. map).
 
 Peli on osoitteessa http://vindinium.org/
 
