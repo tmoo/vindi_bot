@@ -15,7 +15,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class TheBot implements Bot {
 
-    private String[][] board;
+    String[][] board;
     private List<int[]> taverns;
     private List<int[]> mines;
     private boolean[][] visited;
@@ -32,15 +32,19 @@ public class TheBot implements Bot {
 
     private static final Logger logger = LogManager.getLogger(SimpleBotRunner.class);
 
+
     /**
      *
-     * @param gameState
+     * @param gameState Current gamestate
      * @return The next move of the bot.
      */
     @Override
     public BotMove move(GameState gameState) {
+        int sizeOfBoard = gameState.getGame().getBoard().getSize();
+        String boardString = gameState.getGame().getBoard().getTiles();
+        String[][] localBoard = new String[sizeOfBoard][sizeOfBoard];
+        board = readBoardIntoArray(boardString, sizeOfBoard, localBoard);
 
-        board = readBoardIntoArray(gameState);
         mines = new ArrayList<>();
         taverns = new ArrayList<>();
         visited = new boolean[board.length][board[0].length];
@@ -64,10 +68,10 @@ public class TheBot implements Bot {
 
     /**
      * A method for finding the shortest way to different important parts of the
-     * map. At the moment uses BFS, but A* may be better. For now it works well.
+     * map. At the moment uses BFS, which works well for now.
      *
-     * @param board
-     * @param gameState
+     * @param board The board in a 2d-array
+     * @param gameState Current gamestate
      * @return
      */
     private BotMove navigate() {
@@ -108,6 +112,11 @@ public class TheBot implements Bot {
         }
     }
 
+    /**
+     *
+     * @param locations Either mine or tavern
+     * @return The mine/tavern that is closest to the hero
+     */
     private int[] findClosestMineOrTavern(List<int[]> locations) {
         if (locations.isEmpty()) {
             return new int[0];
@@ -123,6 +132,10 @@ public class TheBot implements Bot {
         return closest;
     }
 
+    /**
+     * Go over the board and note where the hero is and where are the taverns
+     * and mines that are not owned by any instance of the same bot.
+     */
     private void findHeroMinesAndTaverns() {
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board[i].length; j++) {
@@ -151,12 +164,6 @@ public class TheBot implements Bot {
 
     /**
      * Basic BFS for finding distance to every position in the map.
-     *
-     * @param visited
-     * @param hero_i
-     * @param hero_j
-     * @param board
-     * @param route
      */
     private void BFS() {
         visited[hero_i][hero_j] = true;
@@ -188,6 +195,16 @@ public class TheBot implements Bot {
         }
     }
 
+    /**
+     * Auxiliary method for BFS. Adds each legal neighbor of current position to
+     * the queu and updates the data structures.
+     *
+     * @param i The current i-position (vertical) of the search
+     * @param j The current j-position (horizontal) of the search
+     * @param new_i The prospective i-position
+     * @param new_j The prospective j-position
+     * @param queue The queu used in BFS
+     */
     private void processNeighbours(int i, int j, int new_i, int new_j, ArrayDeque<int[]> queue) {
         int[] parentCoords = {i, j};
         parent[new_i][new_j] = parentCoords;
@@ -198,14 +215,14 @@ public class TheBot implements Bot {
     }
 
     /**
+     * Creates a 2d-array of the board from the raw input.
      *
-     * @param gameState
-     * @return The board in array for easy manipulation.
+     * @param boardString The board as a string
+     * @param sizeOfBoard Number of characters in the board string
+     * @param board The array we want to build
+     * @return The finished board in an array
      */
-    private String[][] readBoardIntoArray(GameState gameState) {
-        int sizeOfBoard = gameState.getGame().getBoard().getSize();
-        String boardString = gameState.getGame().getBoard().getTiles();
-        String[][] board = new String[sizeOfBoard][sizeOfBoard];
+    public String[][] readBoardIntoArray(String boardString, int sizeOfBoard, String[][] board) {
         int charsInBoard = sizeOfBoard * sizeOfBoard * 2;
 
         int j = 0;
@@ -217,7 +234,6 @@ public class TheBot implements Bot {
                     + Character.toString(boardString.charAt(i + 1));
             board[j][(i / 2) % sizeOfBoard] = tile;
         }
-
         return board;
     }
 
