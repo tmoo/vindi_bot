@@ -1,11 +1,12 @@
 #!/bin/bash
 
-BOT_NAME=${1:-TheBot}
-COMPILE_AND_PACKAGE=${2:-false}
+MODE=${1:-TRAINING}
+BOT_NAME=${2:-TheBot}
+COMPILE_AND_PACKAGE=${3:-false}
 
 if $COMPILE_AND_PACKAGE; then
     mvn compile
     mvn package
 fi
 
-mvn exec:java -Dexec.mainClass="main.Main" -Dexec.args="xtac5qog TRAINING simple bot.${BOT_NAME}"
+mvn exec:java -Dexec.mainClass="main.Main" -Dexec.args="xtac5qog ${MODE} simple bot.${BOT_NAME}"
