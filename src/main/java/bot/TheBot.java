@@ -9,7 +9,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * The bot I will be working on. At the moment it chooses an action randomly.
+ * The bot I am working on. At the moment it uses BFS to find the closest mine
+ * and taverns, and deciding pretty simply which one to go for.
  *
  * @author tuomo
  */
