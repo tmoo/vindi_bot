@@ -17,11 +17,11 @@ import org.apache.logging.log4j.Logger;
 public class TheBot implements Bot {
 
     String[][] board;
-    private List<int[]> taverns;
-    private List<int[]> mines;
-    private boolean[][] visited;
-    private int[][][] parent;
-    private int[][] route;
+    List<int[]> taverns;
+    List<int[]> mines;
+    boolean[][] visited;
+    int[][][] parent;
+    int[][] distances;
 
     Hero hero;
     int heroId;
@@ -32,7 +32,6 @@ public class TheBot implements Bot {
     List<Hero> ownHeroes = new ArrayList<>();
 
     private static final Logger logger = LogManager.getLogger(SimpleBotRunner.class);
-
 
     /**
      *
@@ -45,12 +44,10 @@ public class TheBot implements Bot {
         String boardString = gameState.getGame().getBoard().getTiles();
         String[][] localBoard = new String[sizeOfBoard][sizeOfBoard];
         board = readBoardIntoArray(boardString, sizeOfBoard, localBoard);
-
-        mines = new ArrayList<>();
-        taverns = new ArrayList<>();
+        
         visited = new boolean[board.length][board[0].length];
         parent = new int[board.length][board[0].length][2];
-        route = new int[board.length][board[0].length];
+        distances = new int[board.length][board[0].length];
 
         hero = gameState.getHero();
         heroId = hero.getId();
@@ -76,14 +73,14 @@ public class TheBot implements Bot {
      * @return
      */
     private BotMove navigate() {
-        findHeroMinesAndTaverns();
+        findHeroMinesAndTaverns(board, heroId);
         BFS();
 
         int[] closestTavern = findClosestMineOrTavern(taverns);
         int[] closest = findClosestMineOrTavern(mines);
 
         // if needed/reasonable, go to tavern instead of mine.
-        if ((route[closestTavern[0]][closestTavern[1]] == 1 && heroLife < 95)
+        if ((distances[closestTavern[0]][closestTavern[1]] == 1 && heroLife < 95)
                 || heroLife < 30 || mines.isEmpty() && heroGold >= 2) {
             closest = closestTavern;
         }
@@ -126,7 +123,7 @@ public class TheBot implements Bot {
         for (int[] coord : locations) {
             int i = coord[0];
             int j = coord[1];
-            if (route[i][j] < route[closest[0]][closest[1]]) {
+            if (distances[i][j] < distances[closest[0]][closest[1]]) {
                 closest = coord;
             }
         }
@@ -136,8 +133,12 @@ public class TheBot implements Bot {
     /**
      * Go over the board and note where the hero is and where are the taverns
      * and mines that are not owned by any instance of the same bot.
+     * @param board Game board
+     * @param heroId Id of own hero
      */
-    private void findHeroMinesAndTaverns() {
+    public void findHeroMinesAndTaverns(String[][] board, int heroId) {
+        mines = new ArrayList<>();
+        taverns = new ArrayList<>();
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board[i].length; j++) {
                 if (board[i][j].equals("@" + heroId)) {
@@ -209,7 +210,7 @@ public class TheBot implements Bot {
     private void processNeighbours(int i, int j, int new_i, int new_j, ArrayDeque<int[]> queue) {
         int[] parentCoords = {i, j};
         parent[new_i][new_j] = parentCoords;
-        route[new_i][new_j] = route[i][j] + 1;
+        distances[new_i][new_j] = distances[i][j] + 1;
         visited[new_i][new_j] = true;
         int[] newCoords = {new_i, new_j};
         queue.add(newCoords);
