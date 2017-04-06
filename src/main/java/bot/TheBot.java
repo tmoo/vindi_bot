@@ -19,10 +19,13 @@ public class TheBot implements Bot {
     String[][] board;
     List<int[]> taverns;
     List<int[]> mines;
+    List<int[]> opponents;
     boolean[][] visited;
     int[][][] parent;
     int[][] distances;
 
+    List<Hero> heroes;
+    
     Hero hero;
     int heroId;
     int hero_i;
@@ -44,6 +47,8 @@ public class TheBot implements Bot {
         String boardString = gameState.getGame().getBoard().getTiles();
         String[][] localBoard = new String[sizeOfBoard][sizeOfBoard];
         board = readBoardIntoArray(boardString, sizeOfBoard, localBoard);
+
+        heroes = gameState.getGame().getHeroes();
         
         visited = new boolean[board.length][board[0].length];
         parent = new int[board.length][board[0].length][2];
@@ -60,7 +65,7 @@ public class TheBot implements Bot {
                 ownHeroes.add(h);
             }
         }
-
+        
         return navigate();
     }
 
@@ -73,9 +78,9 @@ public class TheBot implements Bot {
      * @return
      */
     private BotMove navigate() {
-        findHeroMinesAndTaverns(board, heroId);
+        findHeroesMinesAndTaverns(board, heroId);
         BFS();
-
+        
         int[] closestTavern = findClosestMineOrTavern(taverns);
         int[] closest = findClosestMineOrTavern(mines);
 
@@ -133,34 +138,61 @@ public class TheBot implements Bot {
     /**
      * Go over the board and note where the hero is and where are the taverns
      * and mines that are not owned by any instance of the same bot.
+     *
      * @param board Game board
      * @param heroId Id of own hero
      */
-    public void findHeroMinesAndTaverns(String[][] board, int heroId) {
+    public void findHeroesMinesAndTaverns(String[][] board, int heroId) {
         mines = new ArrayList<>();
         taverns = new ArrayList<>();
+        opponents = new ArrayList<>();
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board[i].length; j++) {
-                if (board[i][j].equals("@" + heroId)) {
-                    hero_i = i;
-                    hero_j = j;
+                if (board[i][j].charAt(0) == '@') {
+                    processHeroes(board, i, j, heroId);
                 } else if (board[i][j].charAt(0) == '$') {
-                    boolean isOwnMine = false;
-                    for (Hero h : ownHeroes) {
-                        if (board[i][j].equals("$" + h.getId())) {
-                            isOwnMine = true;
-                        }
-                    }
-                    if (isOwnMine) {
-                        continue;
-                    }
-                    int[] mineCoords = {i, j};
-                    mines.add(mineCoords);
+                    processMines(board, i, j);
                 } else if (board[i][j].equals("[]")) {
                     int[] tavernCoords = {i, j};
                     taverns.add(tavernCoords);
                 }
             }
+        }
+    }
+
+    /**
+     * 
+     * @param board Game board
+     * @param i Current i-index
+     * @param j Current j-index
+     */
+    private void processMines(String[][] board, int i, int j) {
+        boolean isOwnMine = false;
+        for (Hero h : ownHeroes) {
+            if (board[i][j].equals("$" + h.getId())) {
+                isOwnMine = true;
+            }
+        }
+        if (!isOwnMine) {
+            int[] mineCoords = {i, j};
+            mines.add(mineCoords);
+        }
+    }
+
+    /**
+     * 
+     * @param board Game board
+     * @param i Current i-index
+     * @param j Current j-index
+     * @param heroId Id of own hero
+     */
+    private void processHeroes(String[][] board, int i, int j, int heroId) {
+        if (Character.getNumericValue(board[i][j].charAt(1)) == heroId) {
+            hero_i = i;
+            hero_j = j;
+        } else {
+            int[] oppCoords = {i, j};
+            opponents.add(oppCoords);
         }
     }
 
@@ -181,6 +213,9 @@ public class TheBot implements Bot {
                     || board[i][j].charAt(0) == '$') {
                 continue;
             }
+            if (dangerZone(i, j)) {
+                continue;
+            }
 
             if (j < board[i].length - 1 && !visited[i][j + 1]) {
                 processNeighbours(i, j, i, j + 1, queue);
@@ -195,6 +230,18 @@ public class TheBot implements Bot {
                 processNeighbours(i, j, i - 1, j, queue);
             }
         }
+    }
+
+    private boolean dangerZone(int i, int j) {
+        boolean danger = false;
+        for (Hero h : heroes) {
+            if (h.getPos().getX() == i && h.getPos().getY() == j) {
+                if (h.getLife() >= hero.getLife()) {
+                    danger = true;
+                }
+            }
+        }
+        return danger;
     }
 
     /**
