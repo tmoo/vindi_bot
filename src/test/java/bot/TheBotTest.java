@@ -5,9 +5,11 @@
  */
 package bot;
 
+import dto.GameState;
 import java.util.Arrays;
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
@@ -24,8 +26,7 @@ public class TheBotTest {
     private TheBot bot;
     private double size;
     private String[][] testBoard;
-    
-    
+
     public TheBotTest() {
         map = "##############        ############################        "
                 + "##############################    ###########################"
@@ -40,8 +41,8 @@ public class TheBotTest {
                 + "###################        ##############";
         bot = new TheBot();
         size = Math.sqrt(map.length() / 2.0);
-        testBoard = new String[(int)size][(int)size];
-        testBoard = bot.readBoardIntoArray(map, (int)size, testBoard);
+        testBoard = new String[(int) size][(int) size];
+        testBoard = bot.readBoardIntoArray(map, (int) size, testBoard);
     }
 
     @BeforeClass
@@ -65,7 +66,7 @@ public class TheBotTest {
      */
     @Test
     public void testReadBoardIntoArray() {
-        testBoard = bot.readBoardIntoArray(map, (int)size, testBoard);
+        testBoard = bot.readBoardIntoArray(map, (int) size, testBoard);
         StringBuilder sb = new StringBuilder();
         for (String[] s : testBoard) {
             sb.append(Arrays.toString(s)).append("\n");
@@ -90,20 +91,44 @@ public class TheBotTest {
                 + "[##, ##, ##, ##, ##, ##, ##,   ,   ,   ,   , ##, ##, ##, ##, ##, ##, ##]\n";
         assertEquals(sb.toString(), correctOutput);
     }
+    
+    
+    @Test
+    public void testyTest() {
+        
+    }
+
+    @Test
+    public void findHeroesMinesAndTavernsFindsOpponents() {
+        bot.findHeroesMinesAndTaverns(testBoard, 1);
+        int[] o1 = {4, 8};
+        int[] o2 = {12, 6};
+        int[] o3 = {12, 11};
+        boolean opponentsContained = true;
+        for (int[] opponent : bot.opponents) {
+            if (!(Arrays.equals(opponent, o1) || Arrays.equals(opponent, o2)
+                    || Arrays.equals(opponent, o3))) {
+                opponentsContained = false;
+            }
+        }
+        assertTrue(opponentsContained);
+        assertTrue(bot.opponents.size() == 3);
+
+    }
 
     /**
      * Test of method findHeroMinesAndTaverns, testing for mines.
      */
     @Test
-    public void findHeroMinesAndTavernsFindsTaverns() {
-        bot.findHeroMinesAndTaverns(testBoard, 1);
+    public void findHeroesMinesAndTavernsFindsTaverns() {
+        bot.findHeroesMinesAndTaverns(testBoard, 1);
         int[] t1 = {6, 6};
         int[] t2 = {6, 11};
         int[] t3 = {11, 6};
         int[] t4 = {11, 11};
         boolean tavernsContained = true;
         for (int[] tavern : bot.taverns) {
-            if (!(Arrays.equals(tavern, t1) || Arrays.equals(tavern, t2) 
+            if (!(Arrays.equals(tavern, t1) || Arrays.equals(tavern, t2)
                     || Arrays.equals(tavern, t3) || Arrays.equals(tavern, t4))) {
                 tavernsContained = false;
             }
@@ -111,13 +136,13 @@ public class TheBotTest {
         assertTrue(tavernsContained);
         assertTrue(bot.taverns.size() == 4);
     }
-    
+
     /**
      * Test of method findHeroMinesAndTaverns, testing for mines.
      */
     @Test
-    public void findHeroMinesAndTavernsFindsMines() {
-        bot.findHeroMinesAndTaverns(testBoard, 1);
+    public void findHeroesMinesAndTavernsFindsMines() {
+        bot.findHeroesMinesAndTaverns(testBoard, 1);
         int[] m1 = {3, 10};
         int[] m2 = {3, 7};
         int[] m3 = {8, 10};
@@ -128,10 +153,10 @@ public class TheBotTest {
         int[] m8 = {14, 10};
         boolean minesContained = true;
         for (int[] mine : bot.mines) {
-            if (!(Arrays.equals(mine, m1) || Arrays.equals(mine, m2) 
-                    || Arrays.equals(mine,m3) || Arrays.equals(mine, m4)
-                    || Arrays.equals(mine, m5) || Arrays.equals(mine, m6) 
-                    || Arrays.equals(mine,m7) || Arrays.equals(mine, m8))) {
+            if (!(Arrays.equals(mine, m1) || Arrays.equals(mine, m2)
+                    || Arrays.equals(mine, m3) || Arrays.equals(mine, m4)
+                    || Arrays.equals(mine, m5) || Arrays.equals(mine, m6)
+                    || Arrays.equals(mine, m7) || Arrays.equals(mine, m8))) {
                 System.out.println(Arrays.toString(mine));
                 minesContained = false;
             }
@@ -139,13 +164,13 @@ public class TheBotTest {
         assertTrue(minesContained);
         assertTrue(bot.mines.size() == 8);
     }
-    
+
     /**
      * Test of method findHeroMinesAndTaverns, testing for hero.
      */
     @Test
-    public void findHeroMinesAndTavernsFindsHero() {
-        bot.findHeroMinesAndTaverns(testBoard, 1);
+    public void findHeroesMinesAndTavernsFindsHero() {
+        bot.findHeroesMinesAndTaverns(testBoard, 1);
         assertEquals(5, bot.hero_i);
         assertEquals(6, bot.hero_j);
     }
