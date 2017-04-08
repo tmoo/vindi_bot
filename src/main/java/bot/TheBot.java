@@ -85,6 +85,8 @@ public class TheBot implements Bot {
         int[] closestTavern = findClosestMineOrTavern(taverns);
         int[] closest = findClosestMineOrTavern(mines);
 
+        logger.info(Arrays.toString(closest));
+        
         // if needed/reasonable, go to tavern instead of mine.
         if ((distances[closestTavern[0]][closestTavern[1]] == 1 && heroLife < 95)
                 || heroLife < 30 || mines.isEmpty() && heroGold >= 2) {
