@@ -60,7 +60,7 @@ public class SimpleBotRunner implements Callable<GameState> {
                 
                 long time = System.currentTimeMillis();
                 BotMove direction = bot.move(gameState);
-                logger.info("\nDeciding time: " + (System.currentTimeMillis() - time));
+                logger.info("d_time: " + (System.currentTimeMillis() - time));
                 
                 Move move = new Move(apiKey.getKey(), direction.toString());
                 
@@ -69,7 +69,8 @@ public class SimpleBotRunner implements Callable<GameState> {
                 HttpRequest turnRequest = REQUEST_FACTORY.buildPostRequest(new GenericUrl(gameState.getPlayUrl()), turn);
                 HttpResponse turnResponse = turnRequest.execute();
                 time = System.currentTimeMillis() - time;
-                logger.info("\nConnection time: " + time);
+                logger.info("c_time: " + time);
+                logger.info("____________________");
                 
                 gameState = turnResponse.parseAs(GameState.class);
             }
