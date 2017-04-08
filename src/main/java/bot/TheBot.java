@@ -154,6 +154,10 @@ public class TheBot implements Bot {
         }
     }
 
+    /**
+     *
+     * @return A move in a random direction
+     */
     private BotMove randomMove() {
         int randomNumber = (int) (Math.random() * 4);
         
