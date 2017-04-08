@@ -49,11 +49,28 @@ public class TheBot implements Bot {
         String[][] localBoard = new String[sizeOfBoard][sizeOfBoard];
         board = readBoardIntoArray(boardString, sizeOfBoard, localBoard);
 
+        for (String[] strings : board) {
+            logger.info(Arrays.toString(strings));
+        }
+        
         heroes = gameState.getGame().getHeroes();
         
         visited = new boolean[board.length][board[0].length];
+        
         parent = new int[board.length][board[0].length][2];
+        // Makes debugging easier
+        for (int[][] row : parent) {
+            for (int[] tile : row) {
+                tile[0] = -1;
+                tile[1] = -1;
+            }
+        }
         distances = new int[board.length][board[0].length];
+        // Fill distances-matrix to avoid errors with unreachable tiles 
+        // (mainly mines that are blocked by an opponent
+        for (int[] row : distances) {
+            Arrays.fill(row, 666);
+        }
 
         hero = gameState.getHero();
         heroId = hero.getId();
@@ -64,9 +81,10 @@ public class TheBot implements Bot {
         for (Hero h : gameState.getGame().getHeroes()) {
             if (h.getName().equals(hero.getName())) {
                 ownHeroes.add(h);
-            }
+            }   
         }
         
+        logger.info(sizeOfBoard);
         return navigate();
     }
 
