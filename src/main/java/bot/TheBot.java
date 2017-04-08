@@ -26,7 +26,7 @@ public class TheBot implements Bot {
     int[][] distances;
 
     List<Hero> heroes;
-    
+
     Hero hero;
     int heroId;
     int hero_i;
@@ -52,11 +52,11 @@ public class TheBot implements Bot {
         for (String[] strings : board) {
             logger.info(Arrays.toString(strings));
         }
-        
+
         heroes = gameState.getGame().getHeroes();
-        
+
         visited = new boolean[board.length][board[0].length];
-        
+
         parent = new int[board.length][board[0].length][2];
         // Makes debugging easier
         for (int[][] row : parent) {
@@ -81,9 +81,9 @@ public class TheBot implements Bot {
         for (Hero h : gameState.getGame().getHeroes()) {
             if (h.getName().equals(hero.getName())) {
                 ownHeroes.add(h);
-            }   
+            }
         }
-        
+
         logger.info(sizeOfBoard);
         return navigate();
     }
@@ -99,20 +99,48 @@ public class TheBot implements Bot {
     private BotMove navigate() {
         findHeroesMinesAndTaverns(board, heroId);
         BFS();
-        
+
         int[] closestTavern = findClosestMineOrTavern(taverns);
         int[] closest = findClosestMineOrTavern(mines);
 
         logger.info(Arrays.toString(closest));
-        
+
         // if needed/reasonable, go to tavern instead of mine.
         if ((distances[closestTavern[0]][closestTavern[1]] == 1 && heroLife < 95)
                 || heroLife < 30 || mines.isEmpty() && heroGold >= 2) {
             closest = closestTavern;
         }
 
+        return decide(closest);
+    }
+
+    /**
+     * 
+     * @param closest Coordinates of the target
+     * @return Either a move in the direction of the closest chosen target 
+     * (tavern or mine) or if there is no way, choose randomly
+     */
+    private BotMove decide(int[] closest) {
         int l = closest[0];
         int k = closest[1];
+
+        if (distances[l][k] == 666) {
+            int randomNumber = (int) (Math.random() * 4);
+
+            switch (randomNumber) {
+                case 1:
+                    return BotMove.NORTH;
+                case 2:
+                    return BotMove.SOUTH;
+                case 3:
+                    return BotMove.EAST;
+                case 4:
+                    return BotMove.WEST;
+                default:
+                    return BotMove.STAY;
+            }
+        }
+
         while (true) {
             int parent_i = parent[l][k][0];
             int parent_j = parent[l][k][1];
@@ -182,7 +210,7 @@ public class TheBot implements Bot {
     }
 
     /**
-     * 
+     *
      * @param board Game board
      * @param i Current i-index
      * @param j Current j-index
@@ -201,7 +229,7 @@ public class TheBot implements Bot {
     }
 
     /**
-     * 
+     *
      * @param board Game board
      * @param i Current i-index
      * @param j Current j-index
