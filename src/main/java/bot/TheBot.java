@@ -101,44 +101,34 @@ public class TheBot implements Bot {
         BFS();
 
         int[] closestTavern = findClosestMineOrTavern(taverns);
-        int[] closest = findClosestMineOrTavern(mines);
-
-        logger.info(Arrays.toString(closest));
-
-        // if needed/reasonable, go to tavern instead of mine.
-        if ((distances[closestTavern[0]][closestTavern[1]] == 1 && heroLife < 95)
-                || heroLife < 30 || mines.isEmpty() && heroGold >= 2) {
-            closest = closestTavern;
-        }
-
-        return decide(closest);
+        int[] closestMine = findClosestMineOrTavern(mines);
+        
+        logger.info(Arrays.toString(closestMine));
+        
+        return decide(closestTavern, closestMine);
     }
 
     /**
-     * 
-     * @param closest Coordinates of the target
-     * @return Either a move in the direction of the closest chosen target 
+     *
+     * @param closestMine Coordinates of the target
+     * @return Either a move in the direction of the closest chosen target
      * (tavern or mine) or if there is no way, choose randomly
      */
-    private BotMove decide(int[] closest) {
+    private BotMove decide(int[] closestTavern, int[] closestMine) {
+        int[] closest = closestMine;
+        
+        // if needed/reasonable, go to tavern instead of mine.
+        if ((distances[closestTavern[0]][closestTavern[1]] == 1 && heroLife < 95)
+                || heroLife < 30 || mines.isEmpty() 
+                || distances[closestMine[0]][closestMine[1]] >= 666) {
+            closest = closestTavern;
+        }
+
         int l = closest[0];
         int k = closest[1];
 
-        if (distances[l][k] == 666) {
-            int randomNumber = (int) (Math.random() * 4);
-
-            switch (randomNumber) {
-                case 1:
-                    return BotMove.NORTH;
-                case 2:
-                    return BotMove.SOUTH;
-                case 3:
-                    return BotMove.EAST;
-                case 4:
-                    return BotMove.WEST;
-                default:
-                    return BotMove.STAY;
-            }
+        if (distances[l][k] >= 666) {
+            return randomMove();
         }
 
         while (true) {
@@ -161,6 +151,23 @@ public class TheBot implements Bot {
             return BotMove.WEST;
         } else {
             return BotMove.EAST;
+        }
+    }
+
+    private BotMove randomMove() {
+        int randomNumber = (int) (Math.random() * 4);
+        
+        switch (randomNumber) {
+            case 1:
+                return BotMove.NORTH;
+            case 2:
+                return BotMove.SOUTH;
+            case 3:
+                return BotMove.EAST;
+            case 4:
+                return BotMove.WEST;
+            default:
+                return BotMove.STAY;
         }
     }
 
@@ -250,10 +257,11 @@ public class TheBot implements Bot {
      */
     private void BFS() {
         visited[hero_i][hero_j] = true;
-        int[] lel = {hero_i, hero_j};
+        distances[hero_i][hero_j] = 0;
+        int[] start = {hero_i, hero_j};
 
         ArrayDeque<int[]> queue = new ArrayDeque<>();
-        queue.add(lel);
+        queue.add(start);
         while (!queue.isEmpty()) {
             int[] coords = queue.poll();
             int i = coords[0];
@@ -281,6 +289,12 @@ public class TheBot implements Bot {
         }
     }
 
+    /**
+     *
+     * @param i Current i-index
+     * @param j Current j-index
+     * @return True if there is another hero with more health in the position
+     */
     private boolean dangerZone(int i, int j) {
         boolean danger = false;
         for (Hero h : heroes) {
