@@ -8,4 +8,5 @@ Built on top of https://github.com/bstempi/vindinium-client and using its implem
 3) Run from this repository the script "loop" to continously run the bot in compete mode. Remember permissions.
 
 
-Koodikatselmoijalle: käytännössä kaikki itse kirjoittamani koodi ja siten ohjelmalogiikka on luokassa TheBot paketissa bot. Kannattaa siis suunnata heti sinne. Loput on HTTP ja JSON juttuja, jotka on tuosta yllä linkatusta reposta. Toki esimerkiksi luokan GameState tai muiden katselu saattaa olla hyödyllistä ohjelman toiminan ymmärtämiseksi.
+# Koodikatselmoijalle
+käytännössä kaikki itse kirjoittamani koodi ja siten ohjelmalogiikka on luokassa TheBot paketissa bot. Kannattaa siis suunnata heti sinne. Loput on HTTP ja JSON juttuja, jotka on tuosta yllä linkatusta reposta. Toki esimerkiksi luokan GameState tai muiden katselu saattaa olla hyödyllistä ohjelman toiminan ymmärtämiseksi.
