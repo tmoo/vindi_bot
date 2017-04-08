@@ -1,0 +1,1 @@
+Olen testannut JUnitilla etenkin luokkia, jotka muodostavat kentän syötteestä ja etsivät kaivokset ja tavernat. Lisäksi minulla on manuaalista testausta varten pari karttaa ja tilannetta, joissa ohjelma on hajonnut. Kirjoitan niistä vielä JUnit testit myöhemmin.
