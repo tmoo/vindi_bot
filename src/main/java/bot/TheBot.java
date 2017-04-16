@@ -35,7 +35,7 @@ public class TheBot implements Bot {
     int heroGold;
     List<Hero> ownHeroes = new ArrayList<>();
 
-    private static final Logger logger = LogManager.getLogger(SimpleBotRunner.class);
+    private static final Logger logger = LogManager.getLogger(BotRunner.class);
 
     /**
      *
@@ -67,7 +67,7 @@ public class TheBot implements Bot {
         }
         distances = new int[board.length][board[0].length];
         // Fill distances-matrix to avoid errors with unreachable tiles 
-        // (mainly mines that are blocked by an opponent
+        // (mainly mines that are blocked by an opponent)
         for (int[] row : distances) {
             Arrays.fill(row, 666);
         }

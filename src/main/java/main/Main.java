@@ -1,6 +1,6 @@
 package main;
 
-import bot.SimpleBotRunner;
+import bot.BotRunner;
 import dto.ApiKey;
 import com.google.api.client.http.*;
 import com.google.api.client.http.javanet.NetHttpTransport;
@@ -27,8 +27,7 @@ public class Main {
 
         final String key = args[0];
         final String arena = args[1];
-        final String botType = args[2];
-        final String botClass = args[3];
+        final String botClass = args[2];
 
         final GenericUrl gameUrl;
 
@@ -39,17 +38,15 @@ public class Main {
         else
             gameUrl = new VindiniumUrl(arena);
 
-
-        runSimpleBot(key, gameUrl, botClass);
-        
+        run(key, gameUrl, botClass);
     }
     
-    private static void runSimpleBot(String key, GenericUrl gameUrl, String botClass) throws Exception {
+    private static void run(String key, GenericUrl gameUrl, String botClass) throws Exception {
         Class<?> clazz = Class.forName(botClass);
         Class<? extends Bot> botClazz = clazz.asSubclass(Bot.class);
         Bot bot = botClazz.newInstance();
         ApiKey apiKey = new ApiKey(key);
-        SimpleBotRunner runner = new SimpleBotRunner(apiKey, gameUrl, bot);
+        BotRunner runner = new BotRunner(apiKey, gameUrl, bot);
         runner.call();
     }
 

@@ -15,7 +15,7 @@ import java.util.concurrent.Callable;
  * From https://github.com/bstempi/vindinium-client
  */
 
-public class SimpleBotRunner implements Callable<GameState> {
+public class BotRunner implements Callable<GameState> {
     private static final HttpTransport HTTP_TRANSPORT = new ApacheHttpTransport();
     private static final JsonFactory JSON_FACTORY = new GsonFactory();
     private static final HttpRequestFactory REQUEST_FACTORY =
@@ -25,13 +25,13 @@ public class SimpleBotRunner implements Callable<GameState> {
                     request.setParser(new JsonObjectParser(JSON_FACTORY));
                 }
             });
-    private static final Logger logger = LogManager.getLogger(SimpleBotRunner.class);
+    private static final Logger logger = LogManager.getLogger(BotRunner.class);
 
     private final ApiKey apiKey;
     private final GenericUrl gameUrl;
     private final Bot bot;
 
-    public SimpleBotRunner(ApiKey apiKey, GenericUrl gameUrl, Bot bot) {
+    public BotRunner(ApiKey apiKey, GenericUrl gameUrl, Bot bot) {
         this.apiKey = apiKey;
         this.gameUrl = gameUrl;
         this.bot = bot;

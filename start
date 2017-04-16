@@ -9,4 +9,4 @@ if $COMPILE_AND_PACKAGE; then
     mvn package
 fi
 
-mvn exec:java -Dexec.mainClass="main.Main" -Dexec.args="xtac5qog ${MODE} simple bot.${BOT_NAME}"
+mvn exec:java -Dexec.mainClass="main.Main" -Dexec.args="yctb82aw ${MODE} bot.${BOT_NAME}"
