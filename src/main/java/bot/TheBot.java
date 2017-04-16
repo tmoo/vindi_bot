@@ -47,27 +47,35 @@ public class TheBot implements Bot {
      */
     @Override
     public BotMove move(GameState gameState) {
+        initialize(gameState);
+        printInfo(gameState);
+
+        findHeroesMinesAndTaverns(board, heroId);
+        BFS();
+
+        int[] closestTavern = findClosestMineOrTavern(taverns);
+        int[] closestMine = findClosestMineOrTavern(mines);
+
+        return decide(closestTavern, closestMine);
+    }
+
+    private void initialize(GameState gameState) {
         int sizeOfBoard = gameState.getGame().getBoard().getSize();
         String boardString = gameState.getGame().getBoard().getTiles();
         String[][] localBoard = new String[sizeOfBoard][sizeOfBoard];
         board = readBoardIntoArray(boardString, sizeOfBoard, localBoard);
 
-        for (String[] strings : board) {
-            logger.info(Arrays.toString(strings));
-        }
-
         heroes = gameState.getGame().getHeroes();
-
         visited = new boolean[board.length][board[0].length];
-
         parent = new int[board.length][board[0].length][2];
         // Makes debugging easier
         for (int[][] row : parent) {
-            for (int[] tile : row) {
-                tile[0] = -1;
-                tile[1] = -1;
+            for (int[] col : row) {
+                col[0] = -1;
+                col[1] = -1;
             }
         }
+
         distances = new int[board.length][board[0].length];
         // Fill distances-matrix to avoid errors with unreachable tiles 
         // (mainly mines that are blocked by an opponent)
@@ -81,35 +89,18 @@ public class TheBot implements Bot {
         heroLife = hero.getLife();
         heroGold = hero.getGold();
         ownHeroes = new ArrayList<>();
-
         for (Hero h : gameState.getGame().getHeroes()) {
             if (h.getName().equals(hero.getName())) {
                 ownHeroes.add(h);
             }
         }
-
-        logger.info(sizeOfBoard);
-        return navigate();
     }
 
-    /**
-     * Calls the methods for finding heroes, mines, taverns and the shortest
-     * paths to each tile. Then gives the info to decide to obtain a move.
-     *
-     * @param board The board in a 2d-array
-     * @param gameState Current gamestate
-     * @return The next move of the bot.
-     */
-    private BotMove navigate() {
-        findHeroesMinesAndTaverns(board, heroId);
-        BFS();
-
-        int[] closestTavern = findClosestMineOrTavern(taverns);
-        int[] closestMine = findClosestMineOrTavern(mines);
-
-        logger.info(Arrays.toString(closestMine));
-
-        return decide(closestTavern, closestMine);
+    private void printInfo(GameState state) {
+        for (String[] strings : board) {
+            logger.info(Arrays.toString(strings));
+        }
+        logger.info(state.getGame().getBoard().getSize());
     }
 
     /**
@@ -128,19 +119,19 @@ public class TheBot implements Bot {
             target = closestTavern;
         }
 
-        int[] pathToTarget = Arrays.copyOf(target, target.length);
+        int[] stepTowardsTarget = Arrays.copyOf(target, target.length);
 
-        if (distances[pathToTarget[0]][pathToTarget[1]] >= unreachableDistance) {
+        if (distances[stepTowardsTarget[0]][stepTowardsTarget[1]] >= unreachableDistance) {
             return randomMove();
         }
 
-        pathToTarget = findNextStep(pathToTarget);
+        stepTowardsTarget = findNextStep(stepTowardsTarget);
 
-        if (pathToTarget[0] < hero_i) {
+        if (stepTowardsTarget[0] < hero_i) {
             return BotMove.NORTH;
-        } else if (pathToTarget[0] > hero_i) {
+        } else if (stepTowardsTarget[0] > hero_i) {
             return BotMove.SOUTH;
-        } else if (pathToTarget[1] < hero_j) {
+        } else if (stepTowardsTarget[1] < hero_j) {
             return BotMove.WEST;
         } else {
             return BotMove.EAST;
@@ -149,23 +140,23 @@ public class TheBot implements Bot {
 
     /**
      *
-     * @param path The coordinates of the target
+     * @param stepTowardsTarget The coordinates of the target
      * @return The coordinates of the first step towards the target from the
      * hero.
      */
-    private int[] findNextStep(int[] path) {
+    private int[] findNextStep(int[] stepTowardsTarget) {
         while (true) {
-            int parent_i = parent[path[0]][path[1]][0];
-            int parent_j = parent[path[0]][path[1]][1];
+            int parent_i = parent[stepTowardsTarget[0]][stepTowardsTarget[1]][0];
+            int parent_j = parent[stepTowardsTarget[0]][stepTowardsTarget[1]][1];
 
             if (parent_i == hero_i && parent_j == hero_j) {
                 break;
             }
 
-            path[0] = parent_i;
-            path[1] = parent_j;
+            stepTowardsTarget[0] = parent_i;
+            stepTowardsTarget[1] = parent_j;
         }
-        return path;
+        return stepTowardsTarget;
     }
 
     /**
@@ -251,9 +242,9 @@ public class TheBot implements Bot {
 
     /**
      * BFS for finding distance to every position in the map. Fills the fields
-     * distance and parent (and auxiliary field visited). 
-     * Doesn't go through paths that are blocked by ## or an opponent with more 
-     * health than own hero.
+     * distance and parent (and auxiliary field visited). Doesn't go through
+     * paths that are blocked by ## or an opponent with more health than own
+     * hero.
      */
     private void BFS() {
         visited[hero_i][hero_j] = true;
@@ -294,10 +285,11 @@ public class TheBot implements Bot {
 
     /**
      * Auxiliary method for BFS.
-     * 
+     *
      * @param i Current i-index
      * @param j Current j-index
-     * @return True if there is another hero with more health in the given position.
+     * @return True if there is another hero with more health in the given
+     * position.
      */
     private boolean dangerZone(int i, int j) {
         for (Hero h : heroes) {
