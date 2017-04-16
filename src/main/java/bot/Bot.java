@@ -1,6 +1,6 @@
 package bot;
 
-import dto.GameState;
+import auxiliary.GameState;
 
 /**
  * Most basic interface for a bot

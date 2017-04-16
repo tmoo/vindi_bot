@@ -1,6 +1,6 @@
-package dto;
+package auxiliary;
 
-import dto.GameState;
+import auxiliary.GameState;
 import com.google.gson.Gson;
 import org.junit.Before;
 import org.junit.Test;

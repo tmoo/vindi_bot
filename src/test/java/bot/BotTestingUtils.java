@@ -1,6 +1,6 @@
 package bot;
 
-import dto.GameState;
+import auxiliary.GameState;
 import com.google.gson.Gson;
 
 import java.io.File;

@@ -1,7 +1,7 @@
 package bot;
 
-import dto.GameState;
-import dto.GameState.Hero;
+import auxiliary.GameState;
+import auxiliary.GameState.Hero;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,6 +24,7 @@ public class TheBot implements Bot {
     boolean[][] visited;
     int[][][] parent;
     int[][] distances;
+    int unreachableDistance;
 
     List<Hero> heroes;
 
@@ -38,6 +39,8 @@ public class TheBot implements Bot {
     private static final Logger logger = LogManager.getLogger(BotRunner.class);
 
     /**
+     * Sets up all fields and calls the method navigate, which processes the
+     * board and finds the best move.
      *
      * @param gameState Current gamestate
      * @return The next move of the bot.
@@ -68,8 +71,9 @@ public class TheBot implements Bot {
         distances = new int[board.length][board[0].length];
         // Fill distances-matrix to avoid errors with unreachable tiles 
         // (mainly mines that are blocked by an opponent)
+        unreachableDistance = 666;
         for (int[] row : distances) {
-            Arrays.fill(row, 666);
+            Arrays.fill(row, unreachableDistance);
         }
 
         hero = gameState.getHero();
@@ -89,12 +93,12 @@ public class TheBot implements Bot {
     }
 
     /**
-     * A method for finding the shortest way to different important parts of the
-     * map. At the moment uses BFS, which works well for now.
+     * Calls the methods for finding heroes, mines, taverns and the shortest
+     * paths to each tile. Then gives the info to decide to obtain a move.
      *
      * @param board The board in a 2d-array
      * @param gameState Current gamestate
-     * @return
+     * @return The next move of the bot.
      */
     private BotMove navigate() {
         findHeroesMinesAndTaverns(board, heroId);
@@ -102,9 +106,9 @@ public class TheBot implements Bot {
 
         int[] closestTavern = findClosestMineOrTavern(taverns);
         int[] closestMine = findClosestMineOrTavern(mines);
-        
+
         logger.info(Arrays.toString(closestMine));
-        
+
         return decide(closestTavern, closestMine);
     }
 
@@ -115,39 +119,28 @@ public class TheBot implements Bot {
      * (tavern or mine) or if there is no way, choose randomly
      */
     private BotMove decide(int[] closestTavern, int[] closestMine) {
-        int[] closest = closestMine;
-        
+        int[] target = closestMine;
+
         // if needed/reasonable, go to tavern instead of mine.
         if ((distances[closestTavern[0]][closestTavern[1]] == 1 && heroLife < 95)
-                || heroLife < 30 || mines.isEmpty() 
-                || distances[closestMine[0]][closestMine[1]] >= 666) {
-            closest = closestTavern;
+                || heroLife < 30 || mines.isEmpty()
+                || distances[closestMine[0]][closestMine[1]] >= unreachableDistance) {
+            target = closestTavern;
         }
 
-        int l = closest[0];
-        int k = closest[1];
+        int[] pathToTarget = Arrays.copyOf(target, target.length);
 
-        if (distances[l][k] >= 666) {
+        if (distances[pathToTarget[0]][pathToTarget[1]] >= unreachableDistance) {
             return randomMove();
         }
 
-        while (true) {
-            int parent_i = parent[l][k][0];
-            int parent_j = parent[l][k][1];
+        pathToTarget = findNextStep(pathToTarget);
 
-            if (parent_i == hero_i && parent_j == hero_j) {
-                break;
-            }
-
-            l = parent_i;
-            k = parent_j;
-        }
-
-        if (l < hero_i) {
+        if (pathToTarget[0] < hero_i) {
             return BotMove.NORTH;
-        } else if (l > hero_i) {
+        } else if (pathToTarget[0] > hero_i) {
             return BotMove.SOUTH;
-        } else if (k < hero_j) {
+        } else if (pathToTarget[1] < hero_j) {
             return BotMove.WEST;
         } else {
             return BotMove.EAST;
@@ -156,28 +149,28 @@ public class TheBot implements Bot {
 
     /**
      *
-     * @return A move in a random direction
+     * @param path The coordinates of the target
+     * @return The coordinates of the first step towards the target from the
+     * hero.
      */
-    private BotMove randomMove() {
-        int randomNumber = (int) (Math.random() * 4);
-        
-        switch (randomNumber) {
-            case 1:
-                return BotMove.NORTH;
-            case 2:
-                return BotMove.SOUTH;
-            case 3:
-                return BotMove.EAST;
-            case 4:
-                return BotMove.WEST;
-            default:
-                return BotMove.STAY;
+    private int[] findNextStep(int[] path) {
+        while (true) {
+            int parent_i = parent[path[0]][path[1]][0];
+            int parent_j = parent[path[0]][path[1]][1];
+
+            if (parent_i == hero_i && parent_j == hero_j) {
+                break;
+            }
+
+            path[0] = parent_i;
+            path[1] = parent_j;
         }
+        return path;
     }
 
     /**
      *
-     * @param locations Either mine or tavern
+     * @param locations A list of either mines or taverns
      * @return The mine/tavern that is closest to the hero
      */
     private int[] findClosestMineOrTavern(List<int[]> locations) {
@@ -257,7 +250,10 @@ public class TheBot implements Bot {
     }
 
     /**
-     * Basic BFS for finding distance to every position in the map.
+     * BFS for finding distance to every position in the map. Fills the fields
+     * distance and parent (and auxiliary field visited). 
+     * Doesn't go through paths that are blocked by ## or an opponent with more 
+     * health than own hero.
      */
     private void BFS() {
         visited[hero_i][hero_j] = true;
@@ -270,14 +266,17 @@ public class TheBot implements Bot {
             int[] coords = queue.poll();
             int i = coords[0];
             int j = coords[1];
-            if (board[i][j].equals("[]") || board[i][j].equals("##")
-                    || board[i][j].charAt(0) == '$') {
-                continue;
-            }
-            if (dangerZone(i, j)) {
+
+            // Can't go through tavern, mine, blocked terrain, or enemy with more 
+            // health than own hero.
+            if (board[i][j].equals("[]")
+                    || board[i][j].equals("##")
+                    || board[i][j].charAt(0) == '$'
+                    || dangerZone(i, j)) {
                 continue;
             }
 
+            // recurse
             if (j < board[i].length - 1 && !visited[i][j + 1]) {
                 processNeighbours(i, j, i, j + 1, queue);
             }
@@ -294,21 +293,22 @@ public class TheBot implements Bot {
     }
 
     /**
-     *
+     * Auxiliary method for BFS.
+     * 
      * @param i Current i-index
      * @param j Current j-index
-     * @return True if there is another hero with more health in the position
+     * @return True if there is another hero with more health in the given position.
      */
     private boolean dangerZone(int i, int j) {
-        boolean danger = false;
         for (Hero h : heroes) {
-            if (h.getPos().getX() == i && h.getPos().getY() == j) {
-                if (hero.getId() != h.getId() && h.getLife() >= hero.getLife()) {
-                    danger = true;
-                }
+            if (h.getPos().getX() == i
+                    && h.getPos().getY() == j
+                    && hero.getId() != h.getId()
+                    && h.getLife() >= hero.getLife()) {
+                return true;
             }
         }
-        return danger;
+        return false;
     }
 
     /**
@@ -351,6 +351,27 @@ public class TheBot implements Bot {
             board[j][(i / 2) % sizeOfBoard] = tile;
         }
         return board;
+    }
+
+    /**
+     *
+     * @return A move in a random direction
+     */
+    private BotMove randomMove() {
+        int randomNumber = (int) (Math.random() * 4);
+
+        switch (randomNumber) {
+            case 0:
+                return BotMove.NORTH;
+            case 1:
+                return BotMove.SOUTH;
+            case 2:
+                return BotMove.EAST;
+            case 3:
+                return BotMove.WEST;
+            default:
+                return BotMove.STAY;
+        }
     }
 
     @Override

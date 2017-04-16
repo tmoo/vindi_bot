@@ -1,7 +1,7 @@
 package main;
 
 import bot.BotRunner;
-import dto.ApiKey;
+import auxiliary.ApiKey;
 import com.google.api.client.http.*;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;

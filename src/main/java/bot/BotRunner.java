@@ -1,6 +1,8 @@
 package bot;
 
-import dto.*;
+import auxiliary.Move;
+import auxiliary.ApiKey;
+import auxiliary.GameState;
 import com.google.api.client.http.*;
 import com.google.api.client.http.apache.ApacheHttpTransport;
 import com.google.api.client.json.JsonFactory;
