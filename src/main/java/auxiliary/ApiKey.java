@@ -1,4 +1,4 @@
-package dto;
+package auxiliary;
 
 import com.google.api.client.util.Key;
 
