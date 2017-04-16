@@ -5,16 +5,12 @@
  */
 package bot;
 
-import dto.GameState;
+import auxiliary.GameState;
 import java.util.Arrays;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Assert;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
+import static org.mockito.Mockito.*;
 
 /**
  *
@@ -45,22 +41,14 @@ public class TheBotTest {
         testBoard = bot.readBoardIntoArray(map, (int) size, testBoard);
     }
 
-    @BeforeClass
-    public static void setUpClass() {
+    @Test
+    public void testMockito() {
+        GameState mockedGs = mock(GameState.class);
+        
+//        when(mockedGs.getGame().getBoard().getTiles()).thenReturn(map);
+        
     }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
-    }
-
+    
     /**
      * Test of readBoardIntoArray method, of class TheBot.
      */
