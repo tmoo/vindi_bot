@@ -88,6 +88,7 @@ public class TheBot implements Bot {
         heroId = hero.getId();
         heroLife = hero.getLife();
         heroGold = hero.getGold();
+        
         ownHeroes = new ArrayList<>();
         for (Hero h : gameState.getGame().getHeroes()) {
             if (h.getName().equals(hero.getName())) {
@@ -139,7 +140,9 @@ public class TheBot implements Bot {
     }
 
     /**
-     *
+     * Backtrack from target to the tile right next to our hero in order to
+     * take the next step.
+     * 
      * @param stepTowardsTarget The coordinates of the target
      * @return The coordinates of the first step towards the target from the
      * hero.
