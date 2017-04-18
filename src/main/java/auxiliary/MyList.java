@@ -70,6 +70,11 @@ public class MyList<E> implements List<E> {
             public E next() {
                 return (E) array[index++];
             }
+
+            @Override
+            public void remove() {
+                throw new UnsupportedOperationException("Not supported yet.");
+            }
         };
         return iter;
     }
