@@ -210,4 +210,13 @@ public class MyListTest {
         assertFalse(list.remove("asd"));
         assertEquals(0, list.size());
     }
+
+    @Test
+    public void removingByIndexWorks() {
+        assertEquals(3, list2.remove(2));
+
+        assertEquals(2, list2.size());
+        assertEquals(2, list2.get(0));
+        assertEquals(6, list2.get(1));
+    }
 }

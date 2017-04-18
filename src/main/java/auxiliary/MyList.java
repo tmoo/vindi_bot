@@ -102,13 +102,14 @@ public class MyList<E> implements List<E> {
             Object e = array[i];
             if (o == null) {
                 if (e == null) {
-                    System.arraycopy(array, i + 1, array, i, cursor - i - 1);
-                    cursor--;
+                    // Creates a tiny overhead by unnecesasrily fetching the element
+                    // and casting the type, but this should be no problem
+                    remove(i);
                     return true;
                 }
             } else if (o.equals(e)) {
-                System.arraycopy(array, i + 1, array, i, cursor - i - 1);
-                cursor--;
+                // see comment above
+                remove(i);
                 return true;
             }
         }
@@ -162,7 +163,10 @@ public class MyList<E> implements List<E> {
 
     @Override
     public E remove(int index) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        E e = (E) array[index];
+        System.arraycopy(array, index + 1, array, index, cursor - index - 1);
+        cursor--;
+        return e;
     }
 
     @Override
