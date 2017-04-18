@@ -219,4 +219,29 @@ public class MyListTest {
         assertEquals(2, list2.get(0));
         assertEquals(6, list2.get(1));
     }
+    
+    @Test
+    public void containsAllWorksWhenTrue() {
+        list.add(2);
+        list.add(3);
+        assertTrue(list2.containsAll(list));
+    }
+    
+    @Test
+    public void containsAllWorksWhenFalse() {
+        list.add(2);
+        list.add(45);
+        System.out.println(list.get(0));
+        assertFalse(list2.containsAll(list));
+    }
+    
+    @Test
+    public void containsAllWorksForNull() {
+        assertFalse(list2.contains(null));
+    }
+    
+    @Test
+    public void containsAllWorksForEmptyList() {
+        assertFalse(list.contains(2));
+    }
 }

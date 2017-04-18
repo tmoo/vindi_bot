@@ -123,7 +123,15 @@ public class MyList<E> implements List<E> {
 
     @Override
     public boolean containsAll(Collection<?> c) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (c == null) {
+            return false;
+        }
+        for (Object object : c) {
+            if (!this.contains(object)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
