@@ -1,4 +1,5 @@
 # A bot for the AI game vindinium (http://vindinium.org)
+[![Build Status](https://travis-ci.org/tmoo/vindi_bot.svg?branch=master)](https://travis-ci.org/tmoo/vindi_bot)
 
 Built on top of https://github.com/bstempi/vindinium-client and using its implementation of HTTP and JSON parsing
 
