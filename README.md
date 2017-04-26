@@ -5,8 +5,8 @@
 Built on top of https://github.com/bstempi/vindinium-client and using its implementation of HTTP and JSON parsing
 
 # To run (on linux) do one of the following:
-1) Run from this repository the script "start" with arguments "TRAINING TheBot true" or "COMPETITION TheBot true", repending on whether you want to compete against random bots or with other people's bots. You only need to use the arguments once, so that mvn compiles the project. You can only use the first argument if you want to compete, default is training. You will find a URL, where you can watch the game, in your terminal output. Make sure to set execution rights to the script if it doesn't already have them. For example "chmod 700 start" should do the trick.
-2) Go check out the "CLI Usage" at (https://github.com/bstempi/vindinium-client) and use those commands. (The start-scipt also uses them)
+1) Run from this repository the script "start" with arguments "TRAINING TheBot true" or "COMPETITION TheBot true", depending on whether you want to compete against random bots or with other people's bots. You only need to use the arguments once, so that mvn compiles the project. You can only use the first argument if you want to compete, default is training. You will find a URL, where you can watch the game, in your terminal output. Make sure to set execution rights to the script if it doesn't already have them. For example "chmod 700 start" should do the trick.
+2) Go check out the "CLI Usage" at (https://github.com/bstempi/vindinium-client) and use those commands. (The start-script also uses them)
 3) Run from this repository the script "loop" to continously run the bot in compete mode. Remember permissions.
 
 
