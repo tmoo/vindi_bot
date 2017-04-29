@@ -11,4 +11,4 @@ Built on top of https://github.com/bstempi/vindinium-client and using its implem
 
 
 # Koodikatselmoijalle
-käytännössä kaikki itse kirjoittamani koodi ja siten ohjelmalogiikka on luokassa TheBot paketissa bot. Kannattaa siis suunnata heti sinne. Loput on HTTP ja JSON juttuja, jotka on tuosta yllä linkatusta reposta. Toki esimerkiksi luokan GameState tai muiden katselu saattaa olla hyödyllistä ohjelman toiminan ymmärtämiseksi.
+käytännössä kaikki itse kirjoittamani koodi on paketissa datastructures sekä luokassa TheBot paketissa bot. TheBot on itse botti eli ohjelmalogiikka. Datastructures-paketissa on itse toteuttamani tietorakenteet. Kannattaa siis suunnata heti sinne. Loput on HTTP ja JSON juttuja, jotka on tuosta yllä linkatusta reposta. Toki esimerkiksi luokan GameState tai muiden katselu saattaa olla hyödyllistä ohjelman toiminan ymmärtämiseksi.
