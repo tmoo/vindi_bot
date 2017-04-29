@@ -6,6 +6,8 @@ import java.util.NoSuchElementException;
 import java.util.Queue;
 
 /**
+ * My implementation of queue. Only most commonly used methods implemented, in
+ * particular the ones used in TheBot.
  *
  * @author tuomo
  */
@@ -26,11 +28,23 @@ public class MyQueue<E> implements Queue<E> {
         this(INITIAL_CAPACITY);
     }
 
+    /**
+     * Add e to the end of this queue.
+     *
+     * @param e Element to be added.
+     * @return True in any case.
+     */
     @Override
     public boolean add(E e) {
         return offer(e);
     }
 
+    /**
+     * Add e to the end of this queue.
+     *
+     * @param e Element to be added.
+     * @return True in any case.
+     */
     @Override
     public boolean offer(E e) {
         if (count >= array.length) {
@@ -38,7 +52,7 @@ public class MyQueue<E> implements Queue<E> {
             System.arraycopy(array, 0, newArray, 0, count);
             array = newArray;
         }
-        
+
         int nextPos = (cursor + count) % array.length;
         array[nextPos] = e;
         count++;
@@ -46,6 +60,12 @@ public class MyQueue<E> implements Queue<E> {
         return true;
     }
 
+    /**
+     * Remove and return the first element or throw exception if empty.
+     *
+     * @return The element in the first position (before being removed) of the
+     * queue.
+     */
     @Override
     public E remove() {
         E e = poll();
@@ -56,6 +76,11 @@ public class MyQueue<E> implements Queue<E> {
         }
     }
 
+    /**
+     * Remove and return the first element. Null if empty.
+     *
+     * @return
+     */
     @Override
     public E poll() {
         if (isEmpty()) {
@@ -68,6 +93,12 @@ public class MyQueue<E> implements Queue<E> {
         return e;
     }
 
+    /**
+     * Return but don't remove the first element in the queue, throw exception
+     * if empty.
+     *
+     * @return First element in the queue.
+     */
     @Override
     public E element() {
         E e = peek();
@@ -78,21 +109,39 @@ public class MyQueue<E> implements Queue<E> {
         }
     }
 
+    /**
+     * Return but don't remove the first element in the queue.
+     *
+     * @return First element in the queue, null if empty.
+     */
     @Override
     public E peek() {
         return (E) array[cursor];
     }
 
+    /**
+     *
+     * @return Number of element in the queue.
+     */
     @Override
     public int size() {
         return count;
     }
 
+    /**
+     *
+     * @return True if there are no elements in the queue, false otherwise.
+     */
     @Override
     public boolean isEmpty() {
         return count == 0;
     }
 
+    /**
+     *
+     * @param o Object whose containment is checked.
+     * @return True if o is contained in the queue, false otherwise.
+     */
     @Override
     public boolean contains(Object o) {
         int j = 0;
@@ -114,46 +163,95 @@ public class MyQueue<E> implements Queue<E> {
         return false;
     }
 
+    /**
+     * Not supported.
+     *
+     * @return
+     */
     @Override
     public Iterator<E> iterator() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    /**
+     * Not supported.
+     *
+     * @return
+     */
     @Override
     public Object[] toArray() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    /**
+     * Not supported.
+     *
+     * @param <T>
+     * @param arg0
+     * @return
+     */
     @Override
     public <T> T[] toArray(T[] arg0) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    /**
+     * Not supported.
+     *
+     * @param o
+     * @return
+     */
     @Override
     public boolean remove(Object o) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    /**
+     * Not supported.
+     *
+     * @param c
+     * @return
+     */
     @Override
     public boolean containsAll(Collection<?> c) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    /**
+     * Not supported.
+     *
+     * @param c
+     * @return
+     */
     @Override
     public boolean addAll(Collection<? extends E> c) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    /**
+     * Not supported.
+     *
+     * @param c
+     * @return
+     */
     @Override
     public boolean removeAll(Collection<?> c) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    /**
+     * Not supported.
+     * @param c
+     * @return 
+     */
     @Override
     public boolean retainAll(Collection<?> c) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    /**
+     * Not supported.
+     */
     @Override
     public void clear() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
