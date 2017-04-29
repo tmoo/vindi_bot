@@ -1,4 +1,4 @@
-package auxiliary;
+package datastructures;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.ListIterator;
 
 /**
- * My implementation of list.
+ * My implementation of List.
  *
  * @author tuomo
  */
