@@ -2,7 +2,7 @@ package bot;
 
 import auxiliary.GameState;
 import auxiliary.GameState.Hero;
-import auxiliary.MyList;
+import datastructures.MyList;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.List;
