@@ -2,8 +2,8 @@ package bot;
 
 import auxiliary.GameState;
 import auxiliary.GameState.Hero;
+import auxiliary.MyList;
 import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -34,9 +34,13 @@ public class TheBot implements Bot {
     int hero_j;
     int heroLife;
     int heroGold;
-    List<Hero> ownHeroes = new ArrayList<>();
+    List<Hero> ownHeroes;
 
     private static final Logger logger = LogManager.getLogger(BotRunner.class);
+
+    public TheBot() {
+        this.ownHeroes = new MyList<>();
+    }
 
     /**
      * Sets up all fields and calls the method navigate, which processes the
@@ -89,7 +93,7 @@ public class TheBot implements Bot {
         heroLife = hero.getLife();
         heroGold = hero.getGold();
         
-        ownHeroes = new ArrayList<>();
+        ownHeroes = new MyList<>();
         for (Hero h : gameState.getGame().getHeroes()) {
             if (h.getName().equals(hero.getName())) {
                 ownHeroes.add(h);
@@ -106,7 +110,8 @@ public class TheBot implements Bot {
 
     /**
      *
-     * @param closestMine Coordinates of the target
+     * @param closestTavern Coordinates of closest tavern
+     * @param closestMine Coordinates of closest mine
      * @return Either a move in the direction of the closest chosen target
      * (tavern or mine) or if there is no way, choose randomly
      */
@@ -190,9 +195,9 @@ public class TheBot implements Bot {
      * @param heroId Id of own hero
      */
     public void findHeroesMinesAndTaverns(String[][] board, int heroId) {
-        mines = new ArrayList<>();
-        taverns = new ArrayList<>();
-        opponents = new ArrayList<>();
+        mines = new MyList<>();
+        taverns = new MyList<>();
+        opponents = new MyList<>();
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board[i].length; j++) {
                 if (board[i][j].charAt(0) == '@') {
@@ -314,7 +319,7 @@ public class TheBot implements Bot {
      * @param j The current j-position (horizontal) of the search
      * @param new_i The prospective i-position
      * @param new_j The prospective j-position
-     * @param queue The queu used in BFS
+     * @param queue The queue used in BFS
      */
     private void processNeighbours(int i, int j, int new_i, int new_j, ArrayDeque<int[]> queue) {
         int[] parentCoords = {i, j};
