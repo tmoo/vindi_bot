@@ -5,25 +5,25 @@
  */
 package bot;
 
-import auxiliary.GameState;
 import java.util.Arrays;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import org.junit.Before;
 import org.junit.Test;
-import static org.mockito.Mockito.*;
 
 /**
  *
  * @author tuomo
  */
 public class TheBotTest {
-
+    
     private String map;
     private TheBot bot;
     private double size;
     private String[][] testBoard;
 
-    public TheBotTest() {
+    @Before
+    public void setUp() {
         map = "##############        ############################        "
                 + "##############################    ###########################"
                 + "###$4    $4############################  @4    ##############"
@@ -35,18 +35,11 @@ public class TheBotTest {
                 + "     ############################$-    $-####################"
                 + "##########    ##############################        #########"
                 + "###################        ##############";
+
         bot = new TheBot();
         size = Math.sqrt(map.length() / 2.0);
         testBoard = new String[(int) size][(int) size];
         testBoard = bot.readBoardIntoArray(map, (int) size, testBoard);
-    }
-
-    @Test
-    public void testMockito() {
-        GameState mockedGs = mock(GameState.class);
-        
-//        when(mockedGs.getGame().getBoard().getTiles()).thenReturn(map);
-        
     }
     
     /**
@@ -79,13 +72,10 @@ public class TheBotTest {
                 + "[##, ##, ##, ##, ##, ##, ##,   ,   ,   ,   , ##, ##, ##, ##, ##, ##, ##]\n";
         assertEquals(sb.toString(), correctOutput);
     }
-    
-    
-    @Test
-    public void testyTest() {
-        
-    }
 
+    /**
+     * Test of method findHeroMinesAndTaverns, testing for opponents.
+     */
     @Test
     public void findHeroesMinesAndTavernsFindsOpponents() {
         bot.findHeroesMinesAndTaverns(testBoard, 1);
