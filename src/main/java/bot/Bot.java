@@ -22,14 +22,4 @@ public interface Bot {
      * @return the decided move
      */
     public BotMove move(GameState gameState);
-
-    /**
-     * Called before the game is started
-     */
-    public void setup();
-
-    /**
-     * Called after the game
-     */
-    public void shutdown();
 }

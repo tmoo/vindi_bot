@@ -3,9 +3,10 @@ package bot;
 import auxiliary.GameState;
 import auxiliary.GameState.Hero;
 import datastructures.MyList;
-import java.util.ArrayDeque;
+import datastructures.MyQueue;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Queue;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -18,22 +19,30 @@ import org.apache.logging.log4j.Logger;
 public class TheBot implements Bot {
 
     String[][] board;
+
+    // Coordinates for various artefacts on the map
     List<int[]> taverns;
     List<int[]> mines;
     List<int[]> opponents;
+
+    // BFS-related
     boolean[][] visited;
     int[][][] parent;
     int[][] distances;
-    int unreachableDistance;
+    final int UNREACHABLE_DISTANCE = 666;
 
+    // All heroes
     List<Hero> heroes;
 
+    // Some properties of this particular instance of the bot
     Hero hero;
     int heroId;
     int hero_i;
     int hero_j;
     int heroLife;
     int heroGold;
+
+    // List of the heroes with the same name as this instance
     List<Hero> ownHeroes;
 
     private static final Logger logger = LogManager.getLogger(BotRunner.class);
@@ -63,6 +72,11 @@ public class TheBot implements Bot {
         return decide(closestTavern, closestMine);
     }
 
+    /**
+     * Initialize all necessary fields for BFS and decision-making
+     *
+     * @param gameState Current gamestate
+     */
     private void initialize(GameState gameState) {
         int sizeOfBoard = gameState.getGame().getBoard().getSize();
         String boardString = gameState.getGame().getBoard().getTiles();
@@ -83,16 +97,15 @@ public class TheBot implements Bot {
         distances = new int[board.length][board[0].length];
         // Fill distances-matrix to avoid errors with unreachable tiles 
         // (mainly mines that are blocked by an opponent)
-        unreachableDistance = 666;
         for (int[] row : distances) {
-            Arrays.fill(row, unreachableDistance);
+            Arrays.fill(row, UNREACHABLE_DISTANCE);
         }
 
         hero = gameState.getHero();
         heroId = hero.getId();
         heroLife = hero.getLife();
         heroGold = hero.getGold();
-        
+
         ownHeroes = new MyList<>();
         for (Hero h : gameState.getGame().getHeroes()) {
             if (h.getName().equals(hero.getName())) {
@@ -101,11 +114,16 @@ public class TheBot implements Bot {
         }
     }
 
+    /**
+     * Info to be printed on console
+     *
+     * @param state Current gamestate
+     */
     private void printInfo(GameState state) {
         for (String[] strings : board) {
             logger.info(Arrays.toString(strings));
         }
-        logger.info(state.getGame().getBoard().getSize());
+//        logger.info(state.getGame().getBoard().getSize());
     }
 
     /**
@@ -121,13 +139,13 @@ public class TheBot implements Bot {
         // if needed/reasonable, go to tavern instead of mine.
         if ((distances[closestTavern[0]][closestTavern[1]] == 1 && heroLife < 95)
                 || heroLife < 30 || mines.isEmpty()
-                || distances[closestMine[0]][closestMine[1]] >= unreachableDistance) {
+                || distances[closestMine[0]][closestMine[1]] >= UNREACHABLE_DISTANCE) {
             target = closestTavern;
         }
 
         int[] stepTowardsTarget = Arrays.copyOf(target, target.length);
 
-        if (distances[stepTowardsTarget[0]][stepTowardsTarget[1]] >= unreachableDistance) {
+        if (distances[stepTowardsTarget[0]][stepTowardsTarget[1]] >= UNREACHABLE_DISTANCE) {
             return randomMove();
         }
 
@@ -145,9 +163,9 @@ public class TheBot implements Bot {
     }
 
     /**
-     * Backtrack from target to the tile right next to our hero in order to
-     * take the next step.
-     * 
+     * Backtrack from target to the tile right next to our hero in order to take
+     * the next step.
+     *
      * @param stepTowardsTarget The coordinates of the target
      * @return The coordinates of the first step towards the target from the
      * hero.
@@ -259,10 +277,10 @@ public class TheBot implements Bot {
         distances[hero_i][hero_j] = 0;
         int[] start = {hero_i, hero_j};
 
-        ArrayDeque<int[]> queue = new ArrayDeque<>();
+        Queue<int[]> queue = new MyQueue<>();
         queue.add(start);
         while (!queue.isEmpty()) {
-            int[] coords = queue.poll();
+            int[] coords = queue.remove();
             int i = coords[0];
             int j = coords[1];
 
@@ -275,7 +293,7 @@ public class TheBot implements Bot {
                 continue;
             }
 
-            // recurse
+            // recursion
             if (j < board[i].length - 1 && !visited[i][j + 1]) {
                 processNeighbours(i, j, i, j + 1, queue);
             }
@@ -321,7 +339,7 @@ public class TheBot implements Bot {
      * @param new_j The prospective j-position
      * @param queue The queue used in BFS
      */
-    private void processNeighbours(int i, int j, int new_i, int new_j, ArrayDeque<int[]> queue) {
+    private void processNeighbours(int i, int j, int new_i, int new_j, Queue<int[]> queue) {
         int[] parentCoords = {i, j};
         parent[new_i][new_j] = parentCoords;
         distances[new_i][new_j] = distances[i][j] + 1;
@@ -373,15 +391,4 @@ public class TheBot implements Bot {
                 return BotMove.STAY;
         }
     }
-
-    @Override
-    public void setup() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void shutdown() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
 }
