@@ -1,130 +1,209 @@
 package datastructures;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import java.util.Arrays;
 import org.junit.Before;
 import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  *
  * @author tuomo
  */
 public class MyQueueTest {
-    
-    MyQueue que;
-    
+
+    MyQueue queue;
+
     @Before
     public void setUp() {
-        que = new MyQueue();
+        queue = new MyQueue();
     }
-    
+
     @Test
     public void offerWorks() {
-        que.add(5);
-        assertEquals(5, que.element());
-        assertEquals(1, que.size());
+        queue.add(5);
+        assertEquals(5, queue.element());
+        assertEquals(1, queue.size());
     }
-    
+
     @Test
     public void addingWorks() {
-        que.add(2);
-        que.add(34);
-        assertEquals(2, que.element());
-        assertEquals(2, que.size());
+        queue.add(2);
+        queue.add(34);
+        assertEquals(2, queue.element());
+        assertEquals(2, queue.size());
     }
 
     @Test
     public void isEmptyWorks() {
-        assertTrue(que.isEmpty());
+        assertTrue(queue.isEmpty());
     }
-    
+
     @Test
     public void peekWorksWhenEmpty() {
-        assertEquals(null, que.peek());
+        assertEquals(null, queue.peek());
     }
-    
+
     @Test
     public void elementDoesntRemove() {
-        que.add(2);
-        que.add(34);
-        assertEquals(2, que.element());
-        assertEquals(2, que.element());
+        queue.add(2);
+        queue.add(34);
+        assertEquals(2, queue.element());
+        assertEquals(2, queue.element());
     }
-    
+
     @Test
     public void pollWorks() {
-        que.add(2);
-        que.add(34);
-        assertEquals(2, que.poll());
-        assertEquals(34, que.poll());
+        queue.add(2);
+        queue.add(34);
+        assertEquals(2, queue.poll());
+        assertEquals(34, queue.poll());
     }
-    
+
     @Test
     public void pollWorksForEmpty() {
-        assertEquals(null, que.poll());
+        assertEquals(null, queue.poll());
     }
-    
+
     @Test
     public void worksAfterRemoving() {
-        que.add(2);
-        que.add(34);
-        assertEquals(2, que.poll());
-        que.add(15);
-        assertEquals(34, que.poll());
+        queue.add(2);
+        queue.add(34);
+        assertEquals(2, queue.poll());
+        queue.add(15);
+        assertEquals(34, queue.poll());
     }
-    
+
     @Test
     public void worksWhenBecomesFull() {
         for (int i = 0; i < 22; i++) {
-            que.add(i);
+            queue.add(i);
         }
         for (int i = 0; i < 21; i++) {
-            que.poll();
+            queue.poll();
         }
-        assertEquals(21, que.poll());
+        assertEquals(21, queue.poll());
     }
 
     @Test
     public void containsWorksWhenDoesContain() {
-        que.add(2);
-        que.add(34);
-        assertTrue(que.contains(34));
-        assertTrue(que.contains(2));
+        queue.add(2);
+        queue.add(34);
+        assertTrue(queue.contains(34));
+        assertTrue(queue.contains(2));
     }
-    
+
     @Test
     public void containsWorksWhenDoesntContain() {
-        assertTrue(!que.contains(34));
+        assertTrue(!queue.contains(34));
     }
-    
+
     @Test
     public void containsWorksWhenFull() {
         for (int i = 0; i < 22; i++) {
-            que.add(i);
+            queue.add(i);
         }
-        assertTrue(que.contains(15));
-        assertTrue(que.contains(21));
+        assertTrue(queue.contains(15));
+        assertTrue(queue.contains(21));
     }
-    
+
     @Test
     public void queIsEmptyAfterRemovingElements() {
-        que.add(54);
-        que.poll();
-        assertTrue(que.isEmpty());
+        queue.add(54);
+        queue.poll();
+        assertTrue(queue.isEmpty());
     }
-    
+
     @Test
     public void pollingDoesntOverflowTheCursor() {
         for (int i = 0; i < 23; i++) {
-            que.poll();
+            queue.poll();
         }
-        que.add(5);
-        assertEquals(5, que.poll());
+        queue.add(5);
+        assertEquals(5, queue.poll());
     }
-    
+
     @Test
-    public void offeringAndPolling() {
+    public void cantAddNull() {
+        queue.add(null);
+        assertTrue(queue.isEmpty());
+        assertFalse(queue.contains(null));
+    }
+
+    @Test
+    public void doesntContainNull() {
+        assertFalse(queue.contains(null));
+    }
+
+    @Test
+    public void resizingDoesntMessUpWithNulls() {
+        for (int i = 0; i < 12; i++) {
+            queue.add(i);
+        }
+
+        queue.poll();
+        queue.poll();
+        queue.poll();
+
+        for (int i = 0; i < 22; i++) {
+            queue.add(i);
+        }
+
+        queue.poll();
+        queue.poll();
+
+        assertFalse(queue.contains(null));
+        assertEquals(29, queue.size());
+    }
+
+    @Test
+    public void resizingDoesntMessUpWithNulls2() {
+        for (int i = 0; i < 12; i++) {
+            queue.add(i);
+        }
+        queue.poll();
+        queue.poll();
+        queue.poll();
+
+        for (int i = 0; i < 12; i++) {
+            queue.add(i);
+        }
+
+        queue.poll();
+        queue.poll();
+
+        assertFalse(queue.contains(null));
+        assertEquals(19, queue.size());
+    }
+
+    @Test
+    public void resizingDoesntMessUpOrder() {
+        for (int i = 0; i < 12; i++) {
+            queue.add(i);
+        }
+        queue.poll();
+        queue.poll();
+        queue.poll();
         
+        for (int i = 0; i < 15; i++) {
+            queue.add(i);
+        }
+        
+        for (int i = 3; i < 12; i++) {
+            assertEquals(i, queue.poll());
+        }
+        for (int i = 0; i < 15; i++) {
+            assertEquals(i, queue.poll());
+        }
+        
+        queue.add(5);
+        queue.add(554);
+        queue.add(45);
+        assertEquals(5, queue.poll());
+        assertEquals(554, queue.poll());
+        assertEquals(45, queue.poll());
+
     }
 
 }

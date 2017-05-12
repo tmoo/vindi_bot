@@ -14,7 +14,7 @@ import java.util.Queue;
 public class MyQueue<E> implements Queue<E> {
 
     private static final int INITIAL_CAPACITY = 20;
-    private Object[] array;
+    Object[] array;
     private int cursor;
     private int count;
 
@@ -40,17 +40,25 @@ public class MyQueue<E> implements Queue<E> {
     }
 
     /**
-     * Add e to the end of this queue.
+     * Add e to the end of this queue, unless e is null.
      *
      * @param e Element to be added.
-     * @return True in any case.
+     * @return False if e is null, true otherwise.
      */
     @Override
     public boolean offer(E e) {
+        if (e == null) {
+            return false;
+        }
         if (count >= array.length) {
+            /* Create a new array and straigthen the already existing inputs
+            so that cursor starts at 0.
+            */
             Object[] newArray = new Object[count * 2];
-            System.arraycopy(array, 0, newArray, 0, count);
+            System.arraycopy(array, cursor, newArray, 0, array.length - cursor);
+            System.arraycopy(array, 0, newArray, array.length - cursor, cursor);
             array = newArray;
+            cursor = 0;
         }
 
         int nextPos = (cursor + count) % array.length;
@@ -79,7 +87,7 @@ public class MyQueue<E> implements Queue<E> {
     /**
      * Remove and return the first element. Null if empty.
      *
-     * @return
+     * @return first element in the queue, null if empty
      */
     @Override
     public E poll() {
@@ -134,7 +142,7 @@ public class MyQueue<E> implements Queue<E> {
      */
     @Override
     public boolean isEmpty() {
-        return count == 0;
+        return count <= 0;
     }
 
     /**
@@ -144,8 +152,8 @@ public class MyQueue<E> implements Queue<E> {
      */
     @Override
     public boolean contains(Object o) {
-        int j = 0;
-        while (j < count) {
+        int j = cursor;
+        while (j < count + cursor) {
             int i = j % array.length;
             j++;
             Object e = array[i];
