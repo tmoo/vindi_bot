@@ -1,0 +1,6 @@
+#!/bin/bash
+
+MODE=${1:-TRAINING}
+KEY=${2:-yctb82aw}
+
+java -jar vindi_bot.jar ${KEY} ${MODE} bot.TheBot
