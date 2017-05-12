@@ -186,7 +186,8 @@ public class TheBot implements Bot {
     }
 
     /**
-     *
+     * Given a list of mines or taverns, pick the one that is closest to
+     * own hero.
      * @param locations A list of either mines or taverns
      * @return The mine/tavern that is closest to the hero
      */
@@ -231,7 +232,8 @@ public class TheBot implements Bot {
     }
 
     /**
-     *
+     * Add the coordinates of the mine in position (i,j) to list of mines unless
+     * the mine is owned by own hero.
      * @param board Game board
      * @param i Current i-index
      * @param j Current j-index
@@ -250,7 +252,8 @@ public class TheBot implements Bot {
     }
 
     /**
-     *
+     * If the hero in position (i,j) is own hero, update it's coordinates. If the hero is opponent,
+     * add list of opponents with its coordinates.
      * @param board Game board
      * @param i Current i-index
      * @param j Current j-index
@@ -349,7 +352,8 @@ public class TheBot implements Bot {
     }
 
     /**
-     * Creates a 2d-array of the board from the raw input.
+     * Creates a 2d-array of the board from the raw input. In the raw input 
+     * each tile is represented as two characters.
      *
      * @param boardString The board as a string
      * @param sizeOfBoard Number of characters in the board string
