@@ -1,4 +1,4 @@
-# Yksinkertaisin tapa saada jotain tapahtumaan: aja scripti start_jar ilman paramtetreja.
+# Yksinkertaisin tapa saada jotain tapahtumaan: aja scripti start_jar ilman parametreja.
 
 Jar tiedosto löytyy projektin juuresta nimellä vindi_bot.jar. Se vaatii parametreja, joten kannattaa käyttää bash-scriptiä "start_jar". Ilman parametreja se aloittaa harjoituspelin. Jos parametriksi antaa "COMPETITION", aloitetaan ottelu netissä muita botteja vastaan (jos muita pelihalukkaita on tarpeeksi). Scriptille voi antaa myös parametrin KEY, joka kertoo serverillä millä botilla pelataan eli mille botille kirjataan ELO-pisteet. Se on oletusarvoiseksi "git gud"-nimisen bottini avain. Sen pelejä voi seurata sivulta http://vindinium.org/ai/cyilo7v7.
 
